@@ -5,84 +5,8 @@
 /* Custom styles for MindPal */
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-/* Dark mode styles */
-.dark {
-  color-scheme: dark;
-}
-
-.dark body {
-  background-color: #0f172a;
-  color: #f1f5f9;
-}
-
-/* Enhanced dark mode text colors */
-.dark h1,
-.dark h2,
-.dark h3,
-.dark h4,
-.dark h5,
-.dark h6 {
-  color: #f8fafc;
-}
-
-.dark p {
-  color: #e2e8f0;
-}
-
-.dark .text-gray-900 {
-  color: #f8fafc !important;
-}
-
-.dark .text-gray-800 {
-  color: #f1f5f9 !important;
-}
-
-.dark .text-gray-700 {
-  color: #e2e8f0 !important;
-}
-
-.dark .text-gray-600 {
-  color: #cbd5e1 !important;
-}
-
-.dark .text-gray-500 {
-  color: #94a3b8 !important;
-}
-
-.dark .text-gray-400 {
-  color: #64748b !important;
-}
-
-/* Dark mode background improvements */
-.dark .bg-white {
-  background-color: #1e293b !important;
-}
-
-.dark .bg-gray-50 {
-  background-color: #0f172a !important;
-}
-
-.dark .bg-gray-100 {
-  background-color: #1e293b !important;
-}
-
-.dark .bg-gray-200 {
-  background-color: #334155 !important;
-}
-
-/* Dark mode border improvements */
-.dark .border-gray-100 {
-  border-color: #334155 !important;
-}
-
-.dark .border-gray-200 {
-  border-color: #475569 !important;
-}
-
-.dark .border-gray-300 {
-  border-color: #64748b !important;
+  background-color: #f8fafc;
+  color: #1e293b;
 }
 
 /* Custom mood slider styling */
@@ -119,10 +43,6 @@ body {
 
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: #1e293b;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -163,11 +83,6 @@ select:focus {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.dark .glass {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Enhanced hover effects */
@@ -212,16 +127,16 @@ select:focus {
 }
 
 .btn-secondary {
-  @apply bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200;
+  @apply bg-white text-gray-700 font-semibold py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50 transition-all duration-200;
 }
 
 /* Enhanced card styles */
 .card {
-  @apply bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-200;
+  @apply bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200;
 }
 
 .card-gradient {
-  @apply bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-200;
+  @apply bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200;
 }
 
 /* Mobile-first responsive utilities */
@@ -257,7 +172,7 @@ select:focus {
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .high-contrast {
-    @apply border-2 border-black dark:border-white;
+    @apply border-2 border-black;
   }
 }
 
@@ -270,11 +185,6 @@ select:focus {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* Dark mode toggle animation */
-.theme-transition {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Custom toggle switch styles */
@@ -366,7 +276,7 @@ select:focus {
 
 /* Encrypted data indicator */
 .encrypted-indicator {
-  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400;
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800;
 }
 
 .encrypted-indicator::before {
@@ -380,44 +290,44 @@ select:focus {
 }
 
 .chat-message-ai {
-  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl px-4 py-3 max-w-xs sm:max-w-md lg:max-w-lg border border-gray-200 dark:border-gray-700;
+  @apply bg-white text-gray-900 rounded-2xl px-4 py-3 max-w-xs sm:max-w-md lg:max-w-lg border border-gray-200;
 }
 
-/* Improved form styling for dark mode */
-.dark input[type="text"],
-.dark input[type="email"],
-.dark input[type="tel"],
-.dark input[type="password"],
-.dark input[type="datetime-local"],
-.dark textarea,
-.dark select {
-  background-color: #374151;
-  border-color: #4b5563;
-  color: #f9fafb;
+/* Improved form styling */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="datetime-local"],
+textarea,
+select {
+  background-color: #ffffff;
+  border-color: #d1d5db;
+  color: #111827;
 }
 
-.dark input[type="text"]:focus,
-.dark input[type="email"]:focus,
-.dark input[type="tel"]:focus,
-.dark input[type="password"]:focus,
-.dark input[type="datetime-local"]:focus,
-.dark textarea:focus,
-.dark select:focus {
-  background-color: #374151;
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="password"]:focus,
+input[type="datetime-local"]:focus,
+textarea:focus,
+select:focus {
+  background-color: #ffffff;
   border-color: #8b5cf6;
-  color: #f9fafb;
+  color: #111827;
 }
 
-.dark input::placeholder,
-.dark textarea::placeholder {
-  color: #9ca3af;
-}
-
-/* Dark mode improvements for disabled inputs */
-.dark input:disabled,
-.dark textarea:disabled,
-.dark select:disabled {
-  background-color: #1f2937;
+input::placeholder,
+textarea::placeholder {
   color: #6b7280;
-  border-color: #374151;
+}
+
+/* Disabled inputs */
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  border-color: #d1d5db;
 }

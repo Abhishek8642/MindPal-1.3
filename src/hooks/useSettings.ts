@@ -5,7 +5,6 @@ import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 
 export interface UserSettings {
-  theme: 'light' | 'dark' | 'auto';
   language: string;
   voice_speed: 'slow' | 'normal' | 'fast';
   ai_personality: 'supportive' | 'professional' | 'friendly' | 'motivational';
@@ -15,7 +14,6 @@ export interface UserSettings {
 }
 
 const defaultSettings: UserSettings = {
-  theme: 'light',
   language: 'en',
   voice_speed: 'normal',
   ai_personality: 'supportive',
@@ -67,7 +65,6 @@ export function useSettings() {
 
       if (data) {
         const loadedSettings: UserSettings = {
-          theme: data.theme || 'light',
           language: data.language || 'en',
           voice_speed: data.voice_speed || 'normal',
           ai_personality: data.ai_personality || 'supportive',
@@ -76,7 +73,6 @@ export function useSettings() {
           voice_recordings: data.voice_recordings ?? true,
         };
         setSettings(loadedSettings);
-        applyTheme(loadedSettings.theme);
       } else {
         // Create default settings if they don't exist and we're not already creating them
         if (!creatingDefaults && !saving) {
@@ -117,7 +113,6 @@ export function useSettings() {
       });
       
       setSettings(defaultSettings);
-      applyTheme(defaultSettings.theme);
     } catch (error) {
       console.error('Error creating default settings:', error);
       if (isConnectedToSupabase) {
@@ -162,29 +157,12 @@ export function useSettings() {
       });
 
       setSettings(updatedSettings);
-      
-      // Apply theme immediately if changed
-      if (newSettings.theme) {
-        applyTheme(newSettings.theme);
-      }
-      
       toast.success('Settings saved successfully!');
     } catch (error) {
       console.error('Error updating settings:', error);
       toast.error('Failed to save settings. Please try again.');
     } finally {
       setSaving(false);
-    }
-  };
-
-  const applyTheme = (theme: 'light' | 'dark' | 'auto') => {
-    const root = document.documentElement;
-    
-    if (theme === 'auto') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark', prefersDark);
-    } else {
-      root.classList.toggle('dark', theme === 'dark');
     }
   };
 
@@ -196,17 +174,6 @@ export function useSettings() {
       setLoading(false);
     }
   }, [user]);
-
-  // Listen for system theme changes when auto mode is enabled
-  useEffect(() => {
-    if (settings.theme === 'auto') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = () => applyTheme('auto');
-      
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-  }, [settings.theme]);
 
   return {
     settings,

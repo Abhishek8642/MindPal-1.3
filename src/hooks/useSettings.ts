@@ -9,10 +9,6 @@ export interface UserSettings {
   language: string;
   voice_speed: 'slow' | 'normal' | 'fast';
   ai_personality: 'supportive' | 'professional' | 'friendly' | 'motivational';
-  task_reminders: boolean;
-  mood_reminders: boolean;
-  daily_summary: boolean;
-  email_notifications: boolean;
   data_sharing: boolean;
   analytics: boolean;
   voice_recordings: boolean;
@@ -23,10 +19,6 @@ const defaultSettings: UserSettings = {
   language: 'en',
   voice_speed: 'normal',
   ai_personality: 'supportive',
-  task_reminders: true,
-  mood_reminders: true,
-  daily_summary: true,
-  email_notifications: false,
   data_sharing: false,
   analytics: true,
   voice_recordings: true,
@@ -79,10 +71,6 @@ export function useSettings() {
           language: data.language || 'en',
           voice_speed: data.voice_speed || 'normal',
           ai_personality: data.ai_personality || 'supportive',
-          task_reminders: data.task_reminders ?? true,
-          mood_reminders: data.mood_reminders ?? true,
-          daily_summary: data.daily_summary ?? true,
-          email_notifications: data.email_notifications ?? false,
           data_sharing: data.data_sharing ?? false,
           analytics: data.analytics ?? true,
           voice_recordings: data.voice_recordings ?? true,

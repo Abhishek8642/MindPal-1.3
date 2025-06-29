@@ -12,7 +12,6 @@ interface TavusSession {
 
 interface TavusConfig {
   replica_id: string;
-  max_session_duration?: number;
   callback_url?: string;
 }
 
@@ -104,9 +103,6 @@ export function useTavusVideo() {
         body: JSON.stringify({
           replica_id: config.replica_id,
           callback_url: config.callback_url,
-          properties: {
-            max_call_duration: config.max_session_duration || 3600,
-          },
         }),
       });
 
@@ -136,7 +132,7 @@ export function useTavusVideo() {
     }
   }, [tavusApiKey, isOnline]);
 
-  const startSession = useCallback(async (replicaId: string, maxSessionDuration?: number): Promise<boolean> => {
+  const startSession = useCallback(async (replicaId: string): Promise<boolean> => {
     if (!user) {
       toast.error('Please sign in to start a video session');
       return false;
@@ -152,7 +148,6 @@ export function useTavusVideo() {
       // Create Tavus session
       const session = await createSession({
         replica_id: replicaId,
-        max_session_duration: maxSessionDuration || 3600,
       });
 
       if (!session) {
@@ -170,10 +165,8 @@ export function useTavusVideo() {
                 user_id: user.id,
                 session_id: session.session_id,
                 conversation_id: session.conversation_id,
-                is_pro_session: false, // This should be determined by user's subscription
                 session_config: {
                   replica_id: replicaId,
-                  max_session_duration: maxSessionDuration,
                 }
               }]);
 

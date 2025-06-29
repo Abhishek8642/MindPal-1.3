@@ -3,11 +3,10 @@
 
   1. New Tables
     - `profiles` - User profile information
-    - `tasks` - Task management with reminders
+    - `tasks` - Task management
     - `mood_entries` - Mood tracking data
     - `voice_sessions` - Voice AI conversation history
     - `user_settings` - User preferences and settings
-    - `notifications` - Notification queue and history
     - `encrypted_data` - Encrypted sensitive user data
 
   2. Security
@@ -16,11 +15,10 @@
     - Implement encryption for sensitive data
 
   3. Features
-    - Task reminders with scheduling
+    - Task management
     - Mood tracking with analytics
     - Voice session storage
     - User preferences management
-    - Notification system
 */
 
 -- Enable necessary extensions
@@ -34,6 +32,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   full_name text,
   avatar_url text,
   timezone text DEFAULT 'UTC',
+  phone text,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
@@ -68,8 +67,6 @@ CREATE TABLE IF NOT EXISTS tasks (
   priority text DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
   category text DEFAULT 'personal',
   due_date timestamptz,
-  reminder_enabled boolean DEFAULT false,
-  reminder_time timestamptz,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
@@ -128,10 +125,6 @@ CREATE TABLE IF NOT EXISTS user_settings (
   language text DEFAULT 'en',
   voice_speed text DEFAULT 'normal' CHECK (voice_speed IN ('slow', 'normal', 'fast')),
   ai_personality text DEFAULT 'supportive' CHECK (ai_personality IN ('supportive', 'professional', 'friendly', 'motivational')),
-  task_reminders boolean DEFAULT true,
-  mood_reminders boolean DEFAULT true,
-  daily_summary boolean DEFAULT true,
-  email_notifications boolean DEFAULT false,
   data_sharing boolean DEFAULT false,
   analytics boolean DEFAULT true,
   voice_recordings boolean DEFAULT true,
@@ -147,26 +140,6 @@ CREATE POLICY "Users can manage own settings"
   TO authenticated
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
-
--- Notifications table
-CREATE TABLE IF NOT EXISTS notifications (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  type text NOT NULL CHECK (type IN ('task_reminder', 'mood_reminder', 'daily_summary')),
-  title text NOT NULL,
-  message text NOT NULL,
-  scheduled_for timestamptz NOT NULL,
-  sent boolean DEFAULT false,
-  created_at timestamptz DEFAULT now()
-);
-
-ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can read own notifications"
-  ON notifications
-  FOR SELECT
-  TO authenticated
-  USING (auth.uid() = user_id);
 
 -- Encrypted data table for sensitive information
 CREATE TABLE IF NOT EXISTS encrypted_data (
@@ -192,8 +165,6 @@ CREATE INDEX IF NOT EXISTS idx_tasks_due_date ON tasks(due_date) WHERE due_date 
 CREATE INDEX IF NOT EXISTS idx_mood_entries_user_id ON mood_entries(user_id);
 CREATE INDEX IF NOT EXISTS idx_mood_entries_created_at ON mood_entries(created_at);
 CREATE INDEX IF NOT EXISTS idx_voice_sessions_user_id ON voice_sessions(user_id);
-CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
-CREATE INDEX IF NOT EXISTS idx_notifications_scheduled ON notifications(scheduled_for) WHERE NOT sent;
 
 -- Function to automatically create user settings on profile creation
 CREATE OR REPLACE FUNCTION create_user_settings()

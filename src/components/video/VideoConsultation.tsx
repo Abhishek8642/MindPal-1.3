@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   Video, 
   VideoOff, 
@@ -8,7 +8,6 @@ import {
   Phone, 
   PhoneOff,
   Clock,
-  Crown,
   AlertTriangle,
   Settings,
   User,
@@ -20,7 +19,6 @@ import { useSettings } from '../../hooks/useSettings';
 import { useNetworkStatus } from '../../hooks/useNetworkStatus';
 import { useTavusVideo } from '../../hooks/useTavusVideo';
 import toast from 'react-hot-toast';
-import Modal from 'react-modal';
 
 export function VideoConsultation() {
   const { user } = useAuth();
@@ -43,14 +41,6 @@ export function VideoConsultation() {
   const [selectedPersonality, setSelectedPersonality] = useState(settings.ai_personality);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [showLimitModal, setShowLimitModal] = useState(false);
-
-  // Check if user has pro subscription (mock for now)
-  const isProUser = false; // This should come from subscription data
-  const maxSessionTime = isProUser ? 3600 : 300; // 60 minutes for pro, 5 minutes for free
-  const timeRemaining = Math.max(0, maxSessionTime - sessionDuration);
-  // Free session key should be user-specific
-  const FREE_SESSION_KEY = user ? `lastFreeVideoSession_${user.id}` : 'lastFreeVideoSession';
 
   // Default replica ID - this should be configured based on personality
   const getReplicaId = (personality: string) => {
@@ -105,22 +95,9 @@ export function VideoConsultation() {
       return;
     }
 
-    // Free user: check if session was used in last 24h
-    if (!isProUser) {
-      const lastSession = localStorage.getItem(FREE_SESSION_KEY);
-      if (lastSession) {
-        const last = parseInt(lastSession, 10);
-        const now = Date.now();
-        if (now - last < 24 * 60 * 60 * 1000) {
-          setShowLimitModal(true);
-          return;
-        }
-      }
-    }
-
     try {
       const replicaId = getReplicaId(selectedPersonality);
-      await startSession(replicaId, maxSessionTime);
+      await startSession(replicaId);
       toast.success('Video consultation started!');
     } catch (error) {
       console.error('Failed to start session:', error);
@@ -165,18 +142,6 @@ export function VideoConsultation() {
     { id: 'motivational', name: 'Motivational', description: 'Inspiring and encouraging' },
   ];
 
-  // Auto-end session for free users at 5 min
-  useEffect(() => {
-    if (!isProUser && isSessionActive && sessionDuration >= maxSessionTime) {
-      handleEndSession();
-      toast.error('Free session limit reached! Upgrade to Pro or come back tomorrow.');
-      // Store last session timestamp
-      localStorage.setItem(FREE_SESSION_KEY, Date.now().toString());
-      setShowLimitModal(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionDuration, isSessionActive, isProUser]);
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -203,30 +168,6 @@ export function VideoConsultation() {
               <p className="text-sm text-red-700 dark:text-red-400">
                 Video consultation requires a stable internet connection
               </p>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Subscription Notice for Free Users */}
-      {!isProUser && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-6"
-        >
-          <div className="flex items-start space-x-4">
-            <Crown className="h-6 w-6 text-purple-600 dark:text-purple-400 mt-1" />
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                Free Plan: 5-Minute Sessions
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-3">
-                You can enjoy up to 5 minutes of face-to-face consultation. Upgrade to Pro for 60-minute sessions!
-              </p>
-              <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-200">
-                Upgrade to Pro
-              </button>
             </div>
           </div>
         </motion.div>
@@ -279,10 +220,7 @@ export function VideoConsultation() {
             {isSessionActive && (
               <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm text-white px-3 py-2 rounded-lg flex items-center space-x-2">
                 <Clock className="h-4 w-4" />
-                <span className="font-mono">{formatDuration(timeRemaining)}</span>
-                {timeRemaining <= 60 && (
-                  <AlertTriangle className="h-4 w-4 text-yellow-400" />
-                )}
+                <span className="font-mono">{formatDuration(sessionDuration)}</span>
               </div>
             )}
 
@@ -403,26 +341,17 @@ export function VideoConsultation() {
             
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Plan:</span>
+                <span className="text-gray-600 dark:text-gray-400">Status:</span>
                 <span className="font-medium text-gray-900 dark:text-white">
-                  {isProUser ? 'Pro' : 'Free'}
-                </span>
-              </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Max Duration:</span>
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {Math.floor(maxSessionTime / 60)} minutes
+                  {isSessionActive ? 'Active' : 'Ready'}
                 </span>
               </div>
               
               {isSessionActive && (
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 dark:text-gray-400">Time Left:</span>
-                  <span className={`font-medium ${
-                    timeRemaining <= 60 ? 'text-red-600' : 'text-gray-900 dark:text-white'
-                  }`}>
-                    {formatDuration(timeRemaining)}
+                  <span className="text-gray-600 dark:text-gray-400">Duration:</span>
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {formatDuration(sessionDuration)}
                   </span>
                 </div>
               )}
@@ -464,37 +393,6 @@ export function VideoConsultation() {
           </div>
         </motion.div>
       )}
-
-      {/* Limit Modal */}
-      <Modal
-        isOpen={showLimitModal}
-        onRequestClose={() => setShowLimitModal(false)}
-        className="fixed inset-0 flex items-center justify-center z-50"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
-        ariaHideApp={false}
-      >
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 max-w-md w-full shadow-xl text-center">
-          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Free Session Limit Reached</h2>
-          <p className="mb-6 text-gray-700 dark:text-gray-300">
-            You have used your free 5-minute video session for today.<br />
-            Upgrade to Pro for unlimited access, or come back tomorrow for another free session!
-          </p>
-          <div className="flex flex-col gap-3">
-            <button
-              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-200"
-              onClick={() => {/* TODO: Add upgrade logic */}}
-            >
-              Upgrade to Pro
-            </button>
-            <button
-              className="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-semibold mt-2"
-              onClick={() => setShowLimitModal(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }

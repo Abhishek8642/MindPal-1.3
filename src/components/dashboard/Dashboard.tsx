@@ -9,14 +9,11 @@ import {
   Target,
   Award,
   ExternalLink,
-  Plus,
-  Bell,
   WifiOff,
   AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNetworkStatus } from '../../hooks/useNetworkStatus';
-import { useNotifications } from '../../hooks/useNotifications';
 import { supabase } from '../../lib/supabase';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -26,12 +23,6 @@ export function Dashboard() {
   const { user, handleSupabaseError } = useAuth();
   const { isOnline, isConnectedToSupabase, withRetry } = useNetworkStatus();
   const navigate = useNavigate();
-  const { 
-    scheduleMoodReminder, 
-    scheduleDailySummary, 
-    requestNotificationPermission,
-    permission 
-  } = useNotifications();
   const [stats, setStats] = useState({
     totalTasks: 0,
     completedTasks: 0,
@@ -125,14 +116,10 @@ export function Dashboard() {
   useEffect(() => {
     if (user) {
       loadStats();
-      // Request notification permission on dashboard load
-      if (permission === 'default') {
-        requestNotificationPermission();
-      }
     } else {
       setLoading(false);
     }
-  }, [user, loadStats, permission, requestNotificationPermission]);
+  }, [user, loadStats]);
 
   const handleQuickAction = async (action: string) => {
     try {
@@ -145,23 +132,6 @@ export function Dashboard() {
           break;
         case 'task':
           navigate('/tasks');
-          break;
-        case 'schedule-mood-reminder':
-          if (!isConnectedToSupabase) {
-            toast.error('Cannot schedule reminder - no connection to server');
-            return;
-          }
-          await scheduleMoodReminder();
-          break;
-        case 'schedule-daily-summary':
-          if (!isConnectedToSupabase) {
-            toast.error('Cannot schedule summary - no connection to server');
-            return;
-          }
-          await scheduleDailySummary();
-          break;
-        case 'enable-notifications':
-          await requestNotificationPermission();
           break;
         case 'retry-connection':
           setLoading(true);
@@ -284,33 +254,6 @@ export function Dashboard() {
         </motion.div>
       )}
 
-      {/* Notification Permission Banner */}
-      {permission !== 'granted' && !error && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Bell className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-              <div>
-                <p className="font-medium text-yellow-800 dark:text-yellow-300">Enable Notifications</p>
-                <p className="text-sm text-yellow-700 dark:text-yellow-400">
-                  Get reminders for tasks, mood check-ins, and daily summaries
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => handleQuickAction('enable-notifications')}
-              className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
-            >
-              Enable
-            </button>
-          </div>
-        </motion.div>
-      )}
-
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card, index) => {
@@ -353,7 +296,7 @@ export function Dashboard() {
           <span>Quick Actions</span>
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -387,37 +330,6 @@ export function Dashboard() {
             <p className="text-sm opacity-90">Create a new reminder</p>
           </motion.button>
         </div>
-
-        {/* Notification Actions */}
-        {isConnectedToSupabase && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => handleQuickAction('schedule-mood-reminder')}
-              className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white p-4 rounded-xl hover:shadow-lg transition-all duration-200 text-left flex items-center space-x-3"
-            >
-              <Plus className="h-6 w-6" />
-              <div>
-                <h3 className="font-semibold">Schedule Mood Reminder</h3>
-                <p className="text-sm opacity-90">Get reminded to check your mood tomorrow</p>
-              </div>
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => handleQuickAction('schedule-daily-summary')}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 rounded-xl hover:shadow-lg transition-all duration-200 text-left flex items-center space-x-3"
-            >
-              <Plus className="h-6 w-6" />
-              <div>
-                <h3 className="font-semibold">Schedule Daily Summary</h3>
-                <p className="text-sm opacity-90">Get your end-of-day report tonight</p>
-              </div>
-            </motion.button>
-          </div>
-        )}
       </motion.div>
 
       {/* Built on Bolt Badge */}

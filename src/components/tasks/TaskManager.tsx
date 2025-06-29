@@ -8,11 +8,9 @@ import {
   Calendar,
   Flag,
   Filter,
-  Search,
-  Bell
+  Search
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { useNotifications } from '../../hooks/useNotifications';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 
@@ -24,14 +22,11 @@ interface Task {
   priority: 'low' | 'medium' | 'high';
   category: string;
   due_date: string | null;
-  reminder_enabled: boolean;
-  reminder_time: string | null;
   created_at: string;
 }
 
 export function TaskManager() {
   const { user } = useAuth();
-  const { scheduleTaskReminder } = useNotifications();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState({
     title: '',
@@ -39,7 +34,6 @@ export function TaskManager() {
     priority: 'medium' as 'low' | 'medium' | 'high',
     category: 'personal',
     due_date: '',
-    reminder_enabled: false,
   });
   const [showAddForm, setShowAddForm] = useState(false);
   const [filter, setFilter] = useState('all');
@@ -84,10 +78,6 @@ export function TaskManager() {
         priority: newTask.priority,
         category: newTask.category,
         due_date: newTask.due_date || null,
-        reminder_enabled: newTask.reminder_enabled,
-        reminder_time: newTask.reminder_enabled && newTask.due_date 
-          ? new Date(new Date(newTask.due_date).getTime() - 30 * 60 * 1000).toISOString()
-          : null,
       };
 
       const { data, error } = await supabase
@@ -100,18 +90,12 @@ export function TaskManager() {
       
       setTasks([data, ...tasks]);
       
-      // Schedule reminder if enabled
-      if (newTask.reminder_enabled && newTask.due_date) {
-        await scheduleTaskReminder(newTask.title, new Date(newTask.due_date));
-      }
-      
       setNewTask({
         title: '',
         description: '',
         priority: 'medium',
         category: 'personal',
         due_date: '',
-        reminder_enabled: false,
       });
       setShowAddForm(false);
       toast.success('Task added successfully!');
@@ -192,7 +176,7 @@ export function TaskManager() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Task Manager</h1>
-          <p className="text-gray-600 dark:text-gray-300">Stay organized with ADHD-friendly task management</p>
+          <p className="text-gray-600 dark:text-gray-300">Stay organized with simple task management</p>
         </div>
         
         <motion.button
@@ -316,20 +300,6 @@ export function TaskManager() {
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="reminder"
-                  checked={newTask.reminder_enabled}
-                  onChange={(e) => setNewTask({ ...newTask, reminder_enabled: e.target.checked })}
-                  className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                />
-                <label htmlFor="reminder" className="text-sm text-gray-700 dark:text-gray-300 flex items-center space-x-1">
-                  <Bell className="h-4 w-4" />
-                  <span>Enable reminder (30 minutes before due date)</span>
-                </label>
-              </div>
-
               <div className="flex space-x-3 pt-4">
                 <button
                   type="submit"
@@ -401,13 +371,6 @@ export function TaskManager() {
                           <span className="inline-flex items-center text-xs text-gray-500 dark:text-gray-400">
                             <Calendar className="h-3 w-3 mr-1" />
                             {new Date(task.due_date).toLocaleDateString()}
-                          </span>
-                        )}
-
-                        {task.reminder_enabled && (
-                          <span className="inline-flex items-center text-xs text-purple-600 dark:text-purple-400">
-                            <Bell className="h-3 w-3 mr-1" />
-                            Reminder
                           </span>
                         )}
                       </div>

@@ -2,10 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   User, 
-  Bell, 
   Palette, 
-  Shield, 
-  Crown,
+  Shield,
   Save,
   Mail,
   Phone,
@@ -123,10 +121,8 @@ export function Settings() {
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'preferences', label: 'Preferences', icon: Palette },
     { id: 'privacy', label: 'Privacy', icon: Shield },
-    { id: 'subscription', label: 'Subscription', icon: Crown },
   ];
 
   const renderTabContent = () => {
@@ -200,88 +196,6 @@ export function Settings() {
           </div>
         );
 
-      case 'notifications':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Push Notifications</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Task Reminders</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Get reminded about your tasks and deadlines
-                    </p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={settings.task_reminders}
-                      onChange={(e) => updateSettings({ task_reminders: e.target.checked })}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Mood Reminders</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Daily prompts to check in with your emotions
-                    </p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={settings.mood_reminders}
-                      onChange={(e) => updateSettings({ mood_reminders: e.target.checked })}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Daily Summary</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      End-of-day summary of your activities
-                    </p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={settings.daily_summary}
-                      onChange={(e) => updateSettings({ daily_summary: e.target.checked })}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Email Notifications</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Receive notifications via email
-                    </p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={settings.email_notifications}
-                      onChange={(e) => updateSettings({ email_notifications: e.target.checked })}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
       case 'preferences':
         return (
           <div className="space-y-6">
@@ -322,95 +236,6 @@ export function Settings() {
                 <option value="ko">Korean</option>
                 <option value="ar">Arabic</option>
                 <option value="hi">Hindi</option>
-                <option value="bn">Bengali</option>
-                <option value="pa">Punjabi</option>
-                <option value="jv">Javanese</option>
-                <option value="ms">Malay</option>
-                <option value="vi">Vietnamese</option>
-                <option value="th">Thai</option>
-                <option value="tr">Turkish</option>
-                <option value="fa">Persian</option>
-                <option value="pl">Polish</option>
-                <option value="uk">Ukrainian</option>
-                <option value="ro">Romanian</option>
-                <option value="nl">Dutch</option>
-                <option value="el">Greek</option>
-                <option value="hu">Hungarian</option>
-                <option value="cs">Czech</option>
-                <option value="sv">Swedish</option>
-                <option value="fi">Finnish</option>
-                <option value="no">Norwegian</option>
-                <option value="da">Danish</option>
-                <option value="he">Hebrew</option>
-                <option value="id">Indonesian</option>
-                <option value="tl">Tagalog</option>
-                <option value="sr">Serbian</option>
-                <option value="hr">Croatian</option>
-                <option value="sk">Slovak</option>
-                <option value="bg">Bulgarian</option>
-                <option value="lt">Lithuanian</option>
-                <option value="lv">Latvian</option>
-                <option value="et">Estonian</option>
-                <option value="sl">Slovenian</option>
-                <option value="mt">Maltese</option>
-                <option value="ga">Irish</option>
-                <option value="is">Icelandic</option>
-                <option value="sq">Albanian</option>
-                <option value="mk">Macedonian</option>
-                <option value="af">Afrikaans</option>
-                <option value="sw">Swahili</option>
-                <option value="zu">Zulu</option>
-                <option value="xh">Xhosa</option>
-                <option value="st">Southern Sotho</option>
-                <option value="tn">Tswana</option>
-                <option value="ss">Swati</option>
-                <option value="ts">Tsonga</option>
-                <option value="ve">Venda</option>
-                <option value="nr">Ndebele</option>
-                <option value="yo">Yoruba</option>
-                <option value="ig">Igbo</option>
-                <option value="ha">Hausa</option>
-                <option value="am">Amharic</option>
-                <option value="om">Oromo</option>
-                <option value="so">Somali</option>
-                <option value="rw">Kinyarwanda</option>
-                <option value="ny">Chichewa</option>
-                <option value="mg">Malagasy</option>
-                <option value="sn">Shona</option>
-                <option value="ti">Tigrinya</option>
-                <option value="km">Khmer</option>
-                <option value="lo">Lao</option>
-                <option value="my">Burmese</option>
-                <option value="si">Sinhala</option>
-                <option value="ne">Nepali</option>
-                <option value="ur">Urdu</option>
-                <option value="ps">Pashto</option>
-                <option value="sd">Sindhi</option>
-                <option value="gu">Gujarati</option>
-                <option value="or">Odia</option>
-                <option value="ta">Tamil</option>
-                <option value="te">Telugu</option>
-                <option value="kn">Kannada</option>
-                <option value="ml">Malayalam</option>
-                <option value="as">Assamese</option>
-                <option value="mr">Marathi</option>
-                <option value="sa">Sanskrit</option>
-                <option value="bn">Bengali</option>
-                <option value="bo">Tibetan</option>
-                <option value="dz">Dzongkha</option>
-                <option value="mn">Mongolian</option>
-                <option value="kk">Kazakh</option>
-                <option value="ky">Kyrgyz</option>
-                <option value="uz">Uzbek</option>
-                <option value="tk">Turkmen</option>
-                <option value="tg">Tajik</option>
-                <option value="az">Azerbaijani</option>
-                <option value="ka">Georgian</option>
-                <option value="hy">Armenian</option>
-                <option value="be">Belarusian</option>
-                <option value="mo">Moldovan</option>
-                <option value="uk">Ukrainian</option>
-                <option value="bs">Bosnian</option>
               </select>
             </div>
 
@@ -517,48 +342,6 @@ export function Settings() {
           </div>
         );
 
-      case 'subscription':
-        return (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-6 border border-purple-100 dark:border-purple-800">
-              <div className="flex items-center space-x-3 mb-4">
-                <Crown className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">MindPal Pro</h3>
-              </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                Currently on the free plan. Upgrade to Pro for advanced features!
-              </p>
-              
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  <span className="text-gray-700 dark:text-gray-300">Advanced AI personality customization</span>
-                </div>
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  <span className="text-gray-700 dark:text-gray-300">Extended mood analytics and insights</span>
-                </div>
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  <span className="text-gray-700 dark:text-gray-300">Priority support and early access to features</span>
-                </div>
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  <span className="text-gray-700 dark:text-gray-300">Family sharing and parental reports</span>
-                </div>
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-xl font-semibold hover:shadow-lg transition-all duration-200"
-              >
-                Upgrade to Pro - $9.99/month
-              </motion.button>
-            </div>
-          </div>
-        );
-
       default:
         return null;
     }
@@ -617,20 +400,18 @@ export function Settings() {
               {renderTabContent()}
 
               {/* Save Button */}
-              {activeTab !== 'subscription' && (
-                <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleSave}
-                    disabled={profileLoading}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 flex items-center space-x-2 disabled:opacity-50"
-                  >
-                    <Save className="h-4 w-4" />
-                    <span>{profileLoading ? 'Saving...' : 'Save Changes'}</span>
-                  </motion.button>
-                </div>
-              )}
+              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleSave}
+                  disabled={profileLoading}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 flex items-center space-x-2 disabled:opacity-50"
+                >
+                  <Save className="h-4 w-4" />
+                  <span>{profileLoading ? 'Saving...' : 'Save Changes'}</span>
+                </motion.button>
+              </div>
             </motion.div>
           </div>
         </div>

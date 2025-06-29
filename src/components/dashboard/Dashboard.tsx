@@ -10,7 +10,11 @@ import {
   Award,
   ExternalLink,
   WifiOff,
-  AlertTriangle
+  AlertTriangle,
+  Sparkles,
+  Calendar,
+  Clock,
+  Zap
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNetworkStatus } from '../../hooks/useNetworkStatus';
@@ -154,53 +158,57 @@ export function Dashboard() {
       value: `${stats.completedTasks}/${stats.totalTasks}`,
       subtitle: `${Math.round(completionRate)}% completion rate`,
       icon: CheckSquare,
-      color: 'from-green-400 to-emerald-500',
-      bgColor: 'bg-green-50 dark:bg-green-900/20',
-      textColor: 'text-green-700 dark:text-green-400',
+      gradient: 'from-emerald-400 via-green-500 to-teal-600',
+      bgGradient: 'from-emerald-50 to-green-100',
+      iconBg: 'from-emerald-500 to-green-600',
     },
     {
       title: "Today's Mood",
       value: stats.todayMood ? `${stats.todayMood}/10` : 'Not logged',
       subtitle: stats.todayMood ? 'Feeling great!' : 'Log your mood',
       icon: Heart,
-      color: 'from-pink-400 to-rose-500',
-      bgColor: 'bg-pink-50 dark:bg-pink-900/20',
-      textColor: 'text-pink-700 dark:text-pink-400',
+      gradient: 'from-pink-400 via-rose-500 to-red-500',
+      bgGradient: 'from-pink-50 to-rose-100',
+      iconBg: 'from-pink-500 to-rose-600',
     },
     {
       title: 'Chat Sessions',
       value: stats.voiceSessions.toString(),
       subtitle: 'AI conversations',
       icon: Mic,
-      color: 'from-purple-400 to-violet-500',
-      bgColor: 'bg-purple-50 dark:bg-purple-900/20',
-      textColor: 'text-purple-700 dark:text-purple-400',
+      gradient: 'from-purple-400 via-violet-500 to-indigo-600',
+      bgGradient: 'from-purple-50 to-violet-100',
+      iconBg: 'from-purple-500 to-violet-600',
     },
     {
       title: 'Streak',
       value: '7 days',
       subtitle: 'Keep it up!',
       icon: Award,
-      color: 'from-orange-400 to-amber-500',
-      bgColor: 'bg-orange-50 dark:bg-orange-900/20',
-      textColor: 'text-orange-700 dark:text-orange-400',
+      gradient: 'from-amber-400 via-orange-500 to-red-500',
+      bgGradient: 'from-amber-50 to-orange-100',
+      iconBg: 'from-amber-500 to-orange-600',
     },
   ];
 
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <h1 className="text-4xl font-bold text-white mb-2">
             Welcome back, {user?.email?.split('@')[0]}!
           </h1>
-          <p className="text-gray-600 dark:text-gray-300 text-lg">
+          <p className="text-white/80 text-lg">
             {format(new Date(), 'EEEE, MMMM do, yyyy')}
           </p>
-        </div>
+        </motion.div>
         
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white"></div>
         </div>
       </div>
     );
@@ -212,14 +220,24 @@ export function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-          Welcome back, {user?.email?.split('@')[0]}!
+        <motion.div
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/80 text-sm mb-4"
+        >
+          <Sparkles className="h-4 w-4" />
+          <span>Your AI-powered wellness companion</span>
+        </motion.div>
+        <h1 className="text-5xl font-bold text-white mb-2">
+          Welcome back, <span className="text-gradient-secondary">{user?.email?.split('@')[0]}</span>!
         </h1>
-        <p className="text-gray-600 dark:text-gray-300 text-lg">
-          {format(new Date(), 'EEEE, MMMM do, yyyy')}
+        <p className="text-white/80 text-xl flex items-center justify-center space-x-2">
+          <Calendar className="h-5 w-5" />
+          <span>{format(new Date(), 'EEEE, MMMM do, yyyy')}</span>
         </p>
       </motion.div>
 
@@ -228,25 +246,25 @@ export function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4"
+          className="card bg-red-50 border-red-200"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               {!isOnline ? (
-                <WifiOff className="h-5 w-5 text-red-600 dark:text-red-400" />
+                <WifiOff className="h-5 w-5 text-red-600" />
               ) : (
-                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+                <AlertTriangle className="h-5 w-5 text-red-600" />
               )}
               <div>
-                <p className="font-medium text-red-800 dark:text-red-300">Connection Issues</p>
-                <p className="text-sm text-red-700 dark:text-red-400">
+                <p className="font-medium text-red-800">Connection Issues</p>
+                <p className="text-sm text-red-700">
                   {error} - Some features may not work properly
                 </p>
               </div>
             </div>
             <button
               onClick={() => handleQuickAction('retry-connection')}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+              className="btn btn-secondary text-red-600 border-red-200 hover:bg-red-50"
             >
               Retry
             </button>
@@ -263,21 +281,21 @@ export function Dashboard() {
               key={card.title}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`${card.bgColor} rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1 ${
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className={`card card-hover bg-gradient-to-br ${card.bgGradient} border-0 ${
                 error ? 'opacity-75' : ''
               }`}
             >
               <div className="flex items-center justify-between mb-4">
-                <div className={`bg-gradient-to-r ${card.color} p-3 rounded-xl`}>
+                <div className={`bg-gradient-to-r ${card.iconBg} p-3 rounded-xl shadow-lg`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <TrendingUp className="h-4 w-4 text-gray-400" />
               </div>
-              <div className={`${card.textColor} space-y-1`}>
-                <p className="text-sm font-medium opacity-80">{card.title}</p>
-                <p className="text-2xl font-bold">{card.value}</p>
-                <p className="text-xs opacity-70">{card.subtitle}</p>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-600">{card.title}</p>
+                <p className="text-3xl font-bold text-gray-900">{card.value}</p>
+                <p className="text-xs text-gray-500">{card.subtitle}</p>
               </div>
             </motion.div>
           );
@@ -288,45 +306,56 @@ export function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700"
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="card"
       >
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center space-x-3">
-          <Target className="h-6 w-6 text-purple-600" />
-          <span>Quick Actions</span>
-        </h2>
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="bg-gradient-to-r from-purple-500 to-blue-500 p-2 rounded-xl">
+            <Target className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <motion.button
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleQuickAction('voice')}
-            className="bg-gradient-to-r from-purple-500 to-violet-600 text-white p-6 rounded-xl hover:shadow-lg transition-all duration-200 text-left"
+            className="bg-gradient-to-r from-purple-500 via-violet-600 to-indigo-600 text-white p-6 rounded-2xl hover:shadow-2xl transition-all duration-300 text-left group"
           >
-            <Mic className="h-8 w-8 mb-3" />
-            <h3 className="font-semibold mb-1">Voice Chat</h3>
+            <div className="flex items-center justify-between mb-4">
+              <Mic className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+              <Zap className="h-5 w-5 opacity-60" />
+            </div>
+            <h3 className="font-semibold text-lg mb-1">Voice Chat</h3>
             <p className="text-sm opacity-90">Talk to your AI companion</p>
           </motion.button>
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleQuickAction('mood')}
-            className="bg-gradient-to-r from-pink-500 to-rose-600 text-white p-6 rounded-xl hover:shadow-lg transition-all duration-200 text-left"
+            className="bg-gradient-to-r from-pink-500 via-rose-600 to-red-500 text-white p-6 rounded-2xl hover:shadow-2xl transition-all duration-300 text-left group"
           >
-            <Heart className="h-8 w-8 mb-3" />
-            <h3 className="font-semibold mb-1">Mood Check</h3>
+            <div className="flex items-center justify-between mb-4">
+              <Heart className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+              <Clock className="h-5 w-5 opacity-60" />
+            </div>
+            <h3 className="font-semibold text-lg mb-1">Mood Check</h3>
             <p className="text-sm opacity-90">Log your emotions</p>
           </motion.button>
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleQuickAction('task')}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-6 rounded-xl hover:shadow-lg transition-all duration-200 text-left"
+            className="bg-gradient-to-r from-emerald-500 via-green-600 to-teal-600 text-white p-6 rounded-2xl hover:shadow-2xl transition-all duration-300 text-left group"
           >
-            <CheckSquare className="h-8 w-8 mb-3" />
-            <h3 className="font-semibold mb-1">Add Task</h3>
+            <div className="flex items-center justify-between mb-4">
+              <CheckSquare className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+              <Target className="h-5 w-5 opacity-60" />
+            </div>
+            <h3 className="font-semibold text-lg mb-1">Add Task</h3>
             <p className="text-sm opacity-90">Create a new reminder</p>
           </motion.button>
         </div>
@@ -336,19 +365,21 @@ export function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
         className="flex justify-center"
       >
-        <a
+        <motion.a
           href="https://bolt.new"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-medium hover:shadow-2xl transition-all duration-300"
         >
           <Brain className="h-4 w-4" />
           <span>Built on Bolt</span>
           <ExternalLink className="h-3 w-3" />
-        </a>
+        </motion.a>
       </motion.div>
     </div>
   );
